@@ -1,0 +1,110 @@
+/* reset.css */
+
+html, body, ul, ol, li, form, fieldset, legend {
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin-top: 0;
+}
+
+fieldset, img {
+    border: 0;
+}
+
+legend {
+    color: #000;
+}
+
+input, textarea, select, button {
+    font-family: arial, helvetica, sans-serif; /* Change as needed */
+    font-size: 110%;
+    line-height: 1.1;
+}
+
+button {
+    width: auto;
+    overflow: visible;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+caption, th, td {
+    text-align: left;
+    vertical-align: top;
+    font-weight: normal;
+}
+
+li {
+    list-style: none;
+}
+
+abbr, acronym {
+    border-bottom: .1em dotted;
+    cursor: help;
+}
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+pre, code {
+    font-family: "Courier New", monospace, serif;
+    font-size: 100%;
+    line-height: 1.2;
+}
+
+/* ----------------------------------------
+elements
+------------------------------------------*/
+
+body {
+    color: #000;
+    background: #fff;
+    font: 70%/1 "DejaVu Sans", "URW Gothic L",
+        "Helvetica Neue", Helvetica,
+        Arial, "Microsoft Sans Serif", sans-serif; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 .5em;
+    color: #c40000;
+}
+
+h1 {font-size: 200%;}
+h2 {font-size: 180%;}
+h3 {font-size: 160%;}
+h4 {font-size: 140%;}
+h5 {font-size: 120%;}
+h6 {font-size: 100%;}
+p {
+    margin: 0 0 1.5em;
+    line-height: 1.4;
+}
+
+a:link {color: #0f3163;}
+a:visited {color: #04214b;}
+a:focus {color: #000; outline: thin dotted;}
+a:hover {color: #000;}
+a:active {color: red;}
+.content ol {
+    line-height: 1.4;
+    padding: 0 0 1.5em 40px;
+}
+.content ul {
+    line-height: 1.4;
+    padding: 0 0 1.5em 20px;
+}
+.content li {margin: 0 0 .3em;}
+.content ul li {
+    padding: 0 0 0 20px;
+    background: url(../images/bullet.gif) no-repeat 0 .3em;
+}
