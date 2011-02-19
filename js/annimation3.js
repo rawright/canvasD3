@@ -1,5 +1,7 @@
 // JavaScript Document
 
+var x1;
+
 var body = [
     ['c', 0, 7.5, 0, .5],              // Head
     ['l', 0, 7, 0, 0, 6.75, 0],     // Neck

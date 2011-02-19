@@ -1,119 +1,194 @@
-// CanvasD3.js - 3d canvas
-//  @author <a href="mailto:rich@ghostdeveloper.com">Rich Wright</a>
-//  The canvasD3 object allows the simulation of 3D when outputting
-//  lines and arcs to a canvas element
+/**
+canvasD3.js provides 3D simulation for sever canvas line and curve
+drawing functions. It also adds a few shortcut functions to replace
+repetitive calls.
+@author <a href="mailto:rich@ghostdeveloper.com">Rich Wright</a>
+*/
 
+/**
+Instatiate canvasD3 by passing in the id of the canvas element
+@function {}
+@param {string} canvas element id
+@returns CanvasD3 instance or undefined if not a canvas element
+*/
 var CanvasD3 = function(id) {
-    this.canvas = null;
+    this.canvas = document.getElementById(id);
     this.context = null;
     this.width = 0;
     this.height = 0;
     this.unit = 1;
     this.cartesian = false;
     this.origin = {'x' : 0, 'y' : 0, 'z' : 0};
-    this.horizon = {'x' : 0, 'y' : 0, 'z' : 0};
-    return this.getCanvas(id);
-};
-    
-    
-// Initialize the object with the getCanvas method
-// id should be the id of a canvas-type element
-// If a canvas is supported, a pointer to this object will be returned,
-// else the return will be undefined
-CanvasD3.prototype.getCanvas = function(id) {
-    this.canvas = document.getElementById(id);
+    this.current = {'x' : 0, 'y' : 0, 'z' : 0};
+
     if(this.canvas.getContext) {
         this.context = this.canvas.getContext('2d');
         this.width = this.canvas.width;
         this.height = this.canvas.height;
-        
-        // Flip coordinate system to Cartesian with the origin
-        // at the bottom left corner of the canvas
-        //this.context.scale(1, -1);
-        //this.context.translate(0, this.height * -1);
-        this.cartesian = true;
-        
-        // Set origin to lower left corner
-        this.origin.x = 0;
-        this.origin.y = 0;
-        this.origin.z = 0;
-        
-        // Set initial horizon position
-        // Position is relative to origin
-        this.horizon.x = this.width / 2;
-        this.horizon.y = this.height / 4;
-        this.horizon.z = -100; // toward viewer
-        
-        // Save current settings and return
-        //this.context.save();
+        this.setCartesian(true);
+        this.setUnit(1);
+        this.setOrigin(0, 0, 0);
+        this.moveTo(0, 0, 0);        
         return this;
-    }          
+    }
 };
 
-// @param {float} unit Unit value
+/**
+Sets the x, y, z unit size. Any value of x, y, z is multiplied
+by unit.
+@function
+@param {number} unit - new unit value
+@returns {object} current position x, y, z
+*/    
 CanvasD3.prototype.setUnit = function(unit) {
     this.unit = unit;
+    return this.moveTo(this.current.x, this.current.y, this.current.z);
 };
 
-// Set the origin relative to the bottom left corner of the canvas
+/**
+Sets point of origin for x, y, z. Origin will be adjusted at execution
+time by multiplying each coordinte times the unit value.
+@function
+@param {number} x - x coordinate origin
+@param {number} y - y coordinate origin
+@param {number} z - z coordinate origin
+@returns {object} current position x, y, z (0, 0, 0)
+*/
 CanvasD3.prototype.setOrigin = function(x, y, z) {
     this.origin.x = x;
     this.origin.y = y;
     this.origin.z = z;
+    return this.moveTo(0, 0, 0);
 };
 
-// Set the coordinate system to Cartesian
-// @param {boolean} cartesian Set to true for cartesian coordinates
+/**
+Sets the coordinate system to Cartesian (if true) or the normal canvase 
+coordinate system (if false). If Cartesian, the y coordinate increases
+from the bottom of the canvas upward. If not Cartesian, the y coordinate
+increases from the top of the canvas downward.
+@function
+@param {boolean} cartesian - true sets to Cartesian coordinates. True is
+the default when canvasD3 is instatiated.
+@returns {object} current position x, y, z
+*/
 CanvasD3.prototype.setCartesian = function(cartesian) {
     this.cartesian = cartesian;
+    return this.current;
 };
 
-// Move to a location on the canvas relative to the origin
-// getPoint adjusts x and y for the value of z in 2D
+/**
+Sets the value of current position to x, y, z
+@function
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} z - z coordinate
+@returns {object} current position x, y, z (x, y, z)
+*/
+CanvasD3.prototype.setCurrent = function(x, y, z) {
+    this.current.x = x;
+    this.current.y = y;
+    this.current.z = z;
+    return this.current;
+};
+
+/**
+Positions the drawing tool to a point on the canvas.
+@function
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} z - z coordinate
+@returns {object} current position x, y, z (x, y, z)
+*/
 CanvasD3.prototype.moveTo = function(x, y, z) {
     var p = this.getPoint(x, y, z);
     this.context.moveTo(p.x, p.y);
+    return this.setCurrent(x, y, z);
 };
 
-// Draw a line from the current location
+/**
+Draws a line from the current canvas position to the point referenced
+by x, y, z.
+@function
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} z - z coordinate
+@returns {object} current position x, y, z (x, y, z)
+*/
 CanvasD3.prototype.lineTo = function(x, y, z) {
     var p = this.getPoint(x, y, z);
     this.context.lineTo(p.x, p.y);
+    return this.setCurrent(x, y, z);
 };
 
-// Draw an arc (if the current location is not on the arc,
-// this method will draw a line to the arc's beginning location)
-// x, y, z are the center of the circle
-// r is the radius of the circle
-// start and end are the radian begin and end points
-// counterclockwize is a boolean indicating which direction
-// to draw the arc (counter clockwise if true and clockwise if false)
+/**
+Draws an arc of radius r from the center point referenced
+by x, y, z from radian start to radian end in the direction indicated
+@function
+@param {number} x - x coordinate of center
+@param {number} y - y coordinate of center
+@param {number} z - z coordinate of center
+@param {number} start - starting position of arc in radians
+@param {number} end - ending position of arc in radians
+@param {boolean} counterclockwise - direction to draw the arc
+@returns {object} current position x, y, z (x, y, z)
+*/
 CanvasD3.prototype.arc = function(x, y, z, r, start, end, counterclockwise) {
     var p = this.getPoint(x, y, z, r);
     this.context.arc(p.x, p.y, p.r, start, end, counterclockwise);
+    return this.moveTo(x, y, z);
 };
 
-// Clear a rectangular area
+/**
+Clears a rectagular area of the canvas as defined by the two 
+opposit corners x1, y1, z1 and x2, y2, z2
+@function
+@param {number} x1 - x1 coordinate
+@param {number} y1 - y1 coordinate
+@param {number} z1 - z1 coordinate
+@returns {object} current position x, y, z (x1, y1, z1)
+*/
 CanvasD3.prototype.clearRect = function(x1, y1, z1, x2, y2, z2) {
     var p1 = this.getPoint(x1, y1, z1),
         p2 = this.getPoint(x2, y2, z2);
     this.context.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+    return this.moveTo(x1, y1, z1);
 };
 
-// Clear the entire canvas
+/**
+Clears the entire canvas
+@function
+@returns {object} current position x, y, z (0, 0, 0)
+*/
 CanvasD3.prototype.clearCanvas = function() {
-    this.context.clearRect(-this.origin.x, -this.origin.y,
-        this.width, this.height);
+    this.context.clearRect(-this.origin.x,
+        -this.origin.y,
+        this.width,
+        this.height);
+    return this.moveTo(0, 0, 0);
 };
 
-// Move to starting coordinates and draw line to ending coordinates
+/**
+Draws a line from coordinates x1, y1, z1 to x2, y2, z2 
+@function
+@param {number} x1 - x1 coordinate
+@param {number} y1 - y1 coordinate
+@param {number} z1 - z1 coordinate
+@returns {object} current position x, y, z (x2, y2, z2)
+*/
 CanvasD3.prototype.drawLine = function(x1, y1, z1, x2, y2, z2) {
     this.moveTo(x1, y1, z1);
-    this.lineTo(x2, y2, z2);
+    return this.lineTo(x2, y2, z2);
 };
 
-// Draw a cube with front lower corner at x, y, z
-// and width equal to width
+/**
+Draws a line from coordinates x, y, z of width l
+Cube begins at the lower, left, front corner
+@function
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} z - z coordinate
+@returns {object} current position x, y, z (x, y, z)
+*/
 CanvasD3.prototype.drawCube = function(x, y, z, l) {
     this.drawRect(x, y, z, x + l, y + l, z);
     this.drawRect(x, y, z + l, x + l, y + l, z + l);
@@ -121,44 +196,73 @@ CanvasD3.prototype.drawCube = function(x, y, z, l) {
     this.drawLine(x + l, y, z, x + l, y, z + l);
     this.drawLine(x, y + l, z, x, y + l, z + l);
     this.drawLine(x + l, y + l, z, x + l, y + l, z + l);
-
+    return this.moveTo(x, y, z);
 };
 
-// Draw a rectangle
+/**
+Draws a rectangle from coordinates x1, y1, z1 through opposite
+corner x2, y2, z2 
+@function
+@param {number} x1 - x1 coordinate
+@param {number} y1 - y1 coordinate
+@param {number} z1 - z1 coordinate
+@returns {object} current position x, y, z (x1, y1, z1)
+*/
 CanvasD3.prototype.drawRect = function(x1, y1, z1, x2, y2, z2) {
     this.moveTo(x1, y1, z1);
     this.lineTo(x2, y1, z1);
     this.lineTo(x2, y2, z2);
     this.lineTo(x1, y2, z2);
-    this.lineTo(x1, y1, z1);
+    return this.lineTo(x1, y1, z1);
 };
 
-// Move to a point on the circle and then draw the circle
+/**
+Draws a circle with center coordinates x, y, z and radius r
+@function
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} z - z coordinate
+@returns {object} current position x, y, z (x, y, z the center point)
+*/
 CanvasD3.prototype.drawCircle = function(x, y, z, r) {
     this.moveTo(x + r, y, z);
-    this.arc(x, y, z, r, 0, Math.PI * 2, true);
+    return this.arc(x, y, z, r, 0, Math.PI * 2, true);
 };
 
-// stroke actual draws the lines and arcs previously defined
+/**
+Draws a circle with center coordinates x, y, z and radius r
+@function
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} z - z coordinate
+@returns {object} current position x, y, z (x, y, z the center point)
+*/
 CanvasD3.prototype.stroke = function() {
     this.context.stroke();
+    return this.current;
 };
 
-// getPoint adjusts coordinates x, y, z based upon z and
-// the horizon relative to the origin
-// x and y will be pulled closer to the origin if z is not zero
-// The amount of the pull will be propotional to the distance
-// of x and y from the origin
-// @param {Float} x coordinate
-// @param {Float} y coordinate
-// @param {Float} z coordinate
-// @param {Float} r radius (optional)
-// @returns {Object} x, y, z, r (float)
+/**
+Calculates the screen coordintes that should replace the logical
+coordinates x, y, z. If r (radius) is present, it will return an adjusted
+value for that as well.
+Adjustments are for unit, the origin, the coordinate type, and for 
+the 3D effect. The 3D effect tends to skew points back toward the
+center of the screen. This skewing increases with the distance of the
+point from the front of the screen. All drawing functions execute this
+function to replace logical coordinates with physical coordinates.
+@function
+@param {number} x - x logical coordinate
+@param {number} y - y logical coordinate
+@param {number} z - z logical coordinate
+@param {number} r - radius (optional)
+@returns {object} current physical coordinates x, y, z and r for radius
+*/
 CanvasD3.prototype.getPoint = function(x, y, z, r) {
     var dx, dy, dz,
         hx = this.width / 2,
         hy = this.height / 2,
-        hz = 400,
+        hz = 800,
         p = {
             'x' : x === undefined ? 0 : x,
             'y' : y === undefined ? 0 : y,

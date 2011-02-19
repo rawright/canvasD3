@@ -1,5 +1,9 @@
-canvasD3 v0.0.1
+canvasD3 v0.0.2
 
+To do:
+- Add function that will draw lines a, b to point c
+- Add rotate
+- Add connect 2 lines to a point with proper angle
 
 Files
 - README
@@ -10,3 +14,7 @@ Files
 - css/reset.css
 - css/style1.css
 - js/canvasD3.js
+
+New in v0.0.2
+Added return of current position object to most functions.
+Added standard comments to canvasD3.js.
