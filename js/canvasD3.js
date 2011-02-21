@@ -7,7 +7,7 @@ repetitive calls.
 
 /**
 Instatiate canvasD3 by passing in the id of the canvas element
-@function {}
+@function ?
 @param {string} canvas element id
 @returns CanvasD3 instance or undefined if not a canvas element
 */
@@ -20,6 +20,13 @@ var CanvasD3 = function(id) {
     this.cartesian = false;
     this.origin = {'x' : 0, 'y' : 0, 'z' : 0};
     this.current = {'x' : 0, 'y' : 0, 'z' : 0};
+    this.rotation = {
+        'x' : 0,
+        'y' : 0,
+        'z' : 0, 
+        'xRadians' : 0,
+        'yRadians' : 0,
+        'zRadians' : 0};
 
     if(this.canvas.getContext) {
         this.context = this.canvas.getContext('2d');
@@ -28,6 +35,7 @@ var CanvasD3 = function(id) {
         this.setCartesian(true);
         this.setUnit(1);
         this.setOrigin(0, 0, 0);
+        this.setRotation(0, 0, 0, 0, 0, 0, 0);
         this.moveTo(0, 0, 0);        
         return this;
     }
@@ -36,7 +44,7 @@ var CanvasD3 = function(id) {
 /**
 Sets the x, y, z unit size. Any value of x, y, z is multiplied
 by unit.
-@function
+@function ?
 @param {number} unit - new unit value
 @returns {object} current position x, y, z
 */    
@@ -48,7 +56,7 @@ CanvasD3.prototype.setUnit = function(unit) {
 /**
 Sets point of origin for x, y, z. Origin will be adjusted at execution
 time by multiplying each coordinte times the unit value.
-@function
+@function ?
 @param {number} x - x coordinate origin
 @param {number} y - y coordinate origin
 @param {number} z - z coordinate origin
@@ -66,7 +74,7 @@ Sets the coordinate system to Cartesian (if true) or the normal canvase
 coordinate system (if false). If Cartesian, the y coordinate increases
 from the bottom of the canvas upward. If not Cartesian, the y coordinate
 increases from the top of the canvas downward.
-@function
+@function ?
 @param {boolean} cartesian - true sets to Cartesian coordinates. True is
 the default when canvasD3 is instatiated.
 @returns {object} current position x, y, z
@@ -78,7 +86,7 @@ CanvasD3.prototype.setCartesian = function(cartesian) {
 
 /**
 Sets the value of current position to x, y, z
-@function
+@function ?
 @param {number} x - x coordinate
 @param {number} y - y coordinate
 @param {number} z - z coordinate
@@ -92,8 +100,32 @@ CanvasD3.prototype.setCurrent = function(x, y, z) {
 };
 
 /**
+Sets the rotation around the y-axis to be applied to all points
+@function ?
+@param {number} x - rotational center point
+@param {number} y - rotational center point
+@param {number} z - rotational center point
+@param {number} xGrads - grads to rotate in counter clockwise direction
+around the x-axis
+@param {number} yGrads - grads to rotate in counter clockwise direction
+around the y-axis
+@param {number} zGrads - grads to rotate in counter clockwise direction
+around the z-axis
+@returns undefined
+*/
+CanvasD3.prototype.setRotation = 
+    function(x, y, z, xGrads, yGrads, zGrads) {
+        this.rotation.x = x;
+        this.rotation.y = y;
+        this.rotation.z = z;
+        this.rotation.xRadians = Math.PI * 2 / 400 * xGrads;
+        this.rotation.yRadians = Math.PI * 2 / 400 * yGrads;
+        this.rotation.zRadians = Math.PI * 2 / 400 * zGrads;
+};
+
+/**
 Positions the drawing tool to a point on the canvas.
-@function
+@function ?
 @param {number} x - x coordinate
 @param {number} y - y coordinate
 @param {number} z - z coordinate
@@ -108,7 +140,7 @@ CanvasD3.prototype.moveTo = function(x, y, z) {
 /**
 Draws a line from the current canvas position to the point referenced
 by x, y, z.
-@function
+@function ?
 @param {number} x - x coordinate
 @param {number} y - y coordinate
 @param {number} z - z coordinate
@@ -123,7 +155,7 @@ CanvasD3.prototype.lineTo = function(x, y, z) {
 /**
 Draws an arc of radius r from the center point referenced
 by x, y, z from radian start to radian end in the direction indicated
-@function
+@function ?
 @param {number} x - x coordinate of center
 @param {number} y - y coordinate of center
 @param {number} z - z coordinate of center
@@ -141,7 +173,7 @@ CanvasD3.prototype.arc = function(x, y, z, r, start, end, counterclockwise) {
 /**
 Clears a rectagular area of the canvas as defined by the two 
 opposit corners x1, y1, z1 and x2, y2, z2
-@function
+@function ?
 @param {number} x1 - x1 coordinate
 @param {number} y1 - y1 coordinate
 @param {number} z1 - z1 coordinate
@@ -156,7 +188,7 @@ CanvasD3.prototype.clearRect = function(x1, y1, z1, x2, y2, z2) {
 
 /**
 Clears the entire canvas
-@function
+@function ?
 @returns {object} current position x, y, z (0, 0, 0)
 */
 CanvasD3.prototype.clearCanvas = function() {
@@ -169,7 +201,7 @@ CanvasD3.prototype.clearCanvas = function() {
 
 /**
 Draws a line from coordinates x1, y1, z1 to x2, y2, z2 
-@function
+@function ?
 @param {number} x1 - x1 coordinate
 @param {number} y1 - y1 coordinate
 @param {number} z1 - z1 coordinate
@@ -183,7 +215,7 @@ CanvasD3.prototype.drawLine = function(x1, y1, z1, x2, y2, z2) {
 /**
 Draws a line from coordinates x, y, z of width l
 Cube begins at the lower, left, front corner
-@function
+@function ?
 @param {number} x - x coordinate
 @param {number} y - y coordinate
 @param {number} z - z coordinate
@@ -202,7 +234,7 @@ CanvasD3.prototype.drawCube = function(x, y, z, l) {
 /**
 Draws a rectangle from coordinates x1, y1, z1 through opposite
 corner x2, y2, z2 
-@function
+@function ?
 @param {number} x1 - x1 coordinate
 @param {number} y1 - y1 coordinate
 @param {number} z1 - z1 coordinate
@@ -218,7 +250,7 @@ CanvasD3.prototype.drawRect = function(x1, y1, z1, x2, y2, z2) {
 
 /**
 Draws a circle with center coordinates x, y, z and radius r
-@function
+@function ?
 @param {number} x - x coordinate
 @param {number} y - y coordinate
 @param {number} z - z coordinate
@@ -231,7 +263,7 @@ CanvasD3.prototype.drawCircle = function(x, y, z, r) {
 
 /**
 Draws a circle with center coordinates x, y, z and radius r
-@function
+@function ?
 @param {number} x - x coordinate
 @param {number} y - y coordinate
 @param {number} z - z coordinate
@@ -243,15 +275,69 @@ CanvasD3.prototype.stroke = function() {
 };
 
 /**
+Rotates a points coordinates around the y axis based upon x and z
+distance from a center point counter clockwise by grads
+@function ?
+@param {object} rotate around point x, y, z
+@param {number} grads to rotate in the counter clockwize direction (0 - 400)
+@param {object} point to rotate x, y, z
+@returns {object} rotated point coordinates (x, y, z)
+*/
+CanvasD3.prototype.rotate = function(x, y, z) {
+    var xCenter = this.rotation.x,
+        yCenter = this.rotation.y,
+        zCenter = this.rotation.z,
+        p = {
+        'x' : x,
+        'y' : y, 
+        'z' : z
+        },
+        ret;
+    ret = this.rotatePlane(p.x, p.y, this.rotation.zRadians, xCenter, yCenter);
+    p.x = ret.x;
+    p.y = ret.y;
+    ret = this.rotatePlane(p.x, p.z, this.rotation.yRadians, xCenter, zCenter);
+    p.x = ret.x;
+    p.z = ret.y;
+    ret = this.rotatePlane(p.y, p.z, this.rotation.xRadians, yCenter, zCenter);
+    p.y = ret.x;
+    p.z = ret.y;
+    return p;
+    
+};
+
+/**
+Rotates one plane that is mapped to the x and y coordinates
+@function ?
+@param {number} x - x coordinate
+@param {number} y - y coordinate
+@param {number} zRadians - radians to rotate by
+@param {number} xCenter - rotation point x coordinate
+@param {number} yCenter - rotation point y coordiante
+@returns {object} rotated point coordinates (x, y)
+*/
+CanvasD3.prototype.rotatePlane = function(x, y, zRadians, xCenter, yCenter) {
+    var dx = x - xCenter,
+        dy = y - yCenter,
+        sx = dx < 0 ? -1 : 1,
+        sy = dy < 0 ? -1 : 1,
+        radius = Math.sqrt(dx * dx + dy * dy),
+        radians = radius === 0 ? 0 : Math.acos(dx / radius) * sy,
+        p = {
+            'x' : radius * Math.cos(zRadians + radians) + xCenter,
+            'y' : radius * Math.sin(zRadians + radians) + yCenter
+        };
+    return p;
+};
+ 
+/**
 Calculates the screen coordintes that should replace the logical
 coordinates x, y, z. If r (radius) is present, it will return an adjusted
 value for that as well.
-Adjustments are for unit, the origin, the coordinate type, and for 
-the 3D effect. The 3D effect tends to skew points back toward the
-center of the screen. This skewing increases with the distance of the
-point from the front of the screen. All drawing functions execute this
-function to replace logical coordinates with physical coordinates.
-@function
+1) Adjust for axis rotation
+2) Adjust for unit value and origin value
+3) Adjust from 3D to 2D representation
+@function ?
 @param {number} x - x logical coordinate
 @param {number} y - y logical coordinate
 @param {number} z - z logical coordinate
@@ -259,7 +345,7 @@ function to replace logical coordinates with physical coordinates.
 @returns {object} current physical coordinates x, y, z and r for radius
 */
 CanvasD3.prototype.getPoint = function(x, y, z, r) {
-    var dx, dy, dz,
+    var dx, dy, dz, rotated,
         hx = this.width / 2,
         hy = this.height / 2,
         hz = 800,
@@ -269,6 +355,12 @@ CanvasD3.prototype.getPoint = function(x, y, z, r) {
             'z' : z === undefined ? 0 : z,
             'r' : r === undefined ? 0 : r
             };
+            
+    // Rotate coordinates
+    rotated = this.rotate(p.x, p.y, p.z);
+    p.x = rotated.x;
+    p.y = rotated.y;
+    p.z = rotated.z;
 
     // Adjust coordinates for unit value and coordinate system
     p.x = p.x * this.unit + this.origin.x * this.unit;

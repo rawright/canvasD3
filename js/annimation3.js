@@ -1,59 +1,72 @@
-// JavaScript Document
+// annimation3.js
 
-var x1;
-
-var body = [
-    ['c', 0, 7.5, 0, .5],              // Head
-    ['l', 0, 7, 0, 0, 6.75, 0],     // Neck
-    ['l', 0, 6.75, 0, -1, 4, 0],    // Right arm
-    ['l', 0, 6.75, 0, 1, 4, 0],     // Left arm
-    ['l', 0, 6.75, 0, 0, 4, 0],     // Spine
-    ['l', 0, 4, 0, -1, 0, 0],       // Right leg
-    ['l', -1, 0, 0, -1, 0, -1],     // Right foot
-    ['l', 0, 4, 0, 1, 0, 0],        // Left Leg
-    ['l', 1, 0, 0, 1, 0, -1]        // Right foot
-];
-
-var walk = [
-    
-];
-
-var grads = 50;
-
-(function(id) {
-    var c = null,
-        i;
-    var init = function() {
-        c = new CanvasD3(id),
-        rotate = (Math.PI * 2) * grads / 400;
-        console.log(rotate);
-        x1 = c;
-        c.setUnit(15);
-        c.setCartesian(true);
-        c.setOrigin(30, 1, 0);
-        c.clearCanvas();
-        for(i = 0; i < body.length; i++) {
-            if(body[i][0] === 'l') {
-                c.drawLine(
-                    body[i][1] * Math.cos(rotate),
-                    body[i][2],
-                    body[i][3] * Math.sin(rotate),
-                    body[i][4] * Math.cos(rotate),
-                    body[i][5],
-                    body[i][6] * Math.sin(rotate)
+(function(id) { // id = canvas element id
+    var self = {
+        'c' : null,
+        'timer' : null,
+        'grads' : 0,
+        'count' : 0,
+        'body' : [ // 'c', x, y, z, radius (c=circle)
+                   // 'l', x1, y1, z1, x2, y2, z2 (l=line)
+            ['c', 0, 7.5, 0, 0.5],       // Head
+            ['l', 0, 7, 0, 0, 6.75, 0],  // Neck
+            ['l', 0, 6.75, 0, -1, 4, 0], // Right arm
+            ['l', 0, 6.75, 0, 1, 3, 0],  // Left arm
+            ['l', 0, 6.75, 0, 0, 4, 0],  // Spine
+            ['l', 0, 4, 0, -1, 0, 0],    // Right leg
+            ['l', -1, 0, 0, -1, 0, -1],  // Right foot
+            ['l', 0, 4, 0, 1, 0, 0],     // Left Leg
+            ['l', 1, 0, 0, 1, 0, -4],     // Left foot
+            ['l', -3,3,0,-1,3,0],
+            ['l', -2, 2, 0, -2, 4, 0]
+            ],
+        
+        'init' : function() {
+            self.c = new CanvasD3(id);
+            self.c.setUnit(15);
+            self.c.setCartesian(true);
+            self.c.setOrigin(30, 1, 0);
+            addEvent(document.getElementById('walk2'),'click',annimation.drawBody);
+            self.drawBody();
+        },
+        
+        'drawBody' : function() {
+            var i, ii;
+            self.c.clearCanvas();
+            self.c.context.beginPath();
+            self.c.setRotation(0, 0, 0, 0, self.grads, 0);
+            for(i = 0, ii = self.body.length; i < ii; i++) {
+                if(self.body[i][0] === 'l') {
+                    self.c.drawLine(
+                        self.body[i][1],
+                        self.body[i][2],
+                        self.body[i][3],
+                        self.body[i][4],
+                        self.body[i][5],
+                        self.body[i][6]
+                        );
+                } else if(self.body[i][0] === 'c') {
+                    self.c.drawCircle(
+                        self.body[i][1],
+                        self.body[i][2],
+                        self.body[i][3],
+                        self.body[i][4]
                     );
-            } else if(body[i][0] === 'c') {
-                c.drawCircle(
-                    body[i][1],
-                    body[i][2],
-                    body[i][3],
-                    body[i][4]
-                );
+                }
+            }
+            self.c.stroke();
+            console.log(self.grads);
+            self.grads += 10;
+            if(self.count < 20) {
+                self.count += 1;
+                self.grads += 10;
+                self.timer = 
+                    setTimeout(annimation.drawBody,(1000/5));
             }
         }
-        c.stroke();
-        console.log(c.width, c.height);
+        
     };
+    window.annimation = self;
     
-    addEvent(window, 'load', init);
-})('annimation2');
+    addEvent(window, 'load', self.init);
+}('annimation2'));

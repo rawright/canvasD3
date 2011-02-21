@@ -1,8 +1,7 @@
-canvasD3 v0.0.2
+canvasD3 v0.0.3
 
 To do:
 - Add function that will draw lines a, b to point c
-- Add rotate
 - Add connect 2 lines to a point with proper angle
 
 Files
@@ -15,6 +14,9 @@ Files
 - css/style1.css
 - js/canvasD3.js
 
-New in v0.0.2
-Added return of current position object to most functions.
-Added standard comments to canvasD3.js.
+New in v0.0.3
+Added rotation capabilities for all three plans
+To set a rotation call setRotation(x, y, z, xGrads, yGrads, zGrads).
+x, y, z define the point to rotate around.
+xGrads, yGrads, zGrads specify the rotation in grads along each
+axis (400 grads = 2PI or 360 degrees).
