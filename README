@@ -1,8 +1,15 @@
-canvasD3 v0.0.3
+canvasD3 v0.0.4
 
 To do:
 - Add function that will draw lines a, b to point c
 - Add connect 2 lines to a point with proper angle
+- Experiment with 3D by displaying side-by-side canvas elements with
+slightly different perspectives of the same thing.
+- Add Ant build script
+- Qunit tests
+- Change stickman.js to return an array of draw instructions rather
+than actually drawing on the screen. These can then be reused with
+changes to orientation and rotation.
 
 Files
 - README
@@ -10,9 +17,18 @@ Files
 - .getignore
 - index.html
 - css/master.css
-- css/reset.css
+- css/yuireset.css
 - css/style1.css
 - js/canvasD3.js
+- js/stickman.js
+- js/annimation2.js
+- js/annimation3.js
+
+New in v0.0.4
+Added stickman.js in order to experiment with using canvasD3.js for
+cartoonish annimation in 3D.
+Replaced helper_functions.js with util.js.
+Replaced my reset with the yui css reset.
 
 New in v0.0.3
 Added rotation capabilities for all three plans

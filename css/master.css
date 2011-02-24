@@ -1,4 +1,5 @@
 /* master.css */
 
-@import 'reset.css';
+@import 'yuireset.css';
+/*@import 'reset.css';*/
 @import 'style1.css';

@@ -2,6 +2,7 @@
 
 (function(id) { // id = canvas element id
     var self = {
+        'util' : ghostdeveloper.util,
         'c' : null,
         'timer' : null,
         'grads' : 0,
@@ -26,7 +27,8 @@
             self.c.setUnit(15);
             self.c.setCartesian(true);
             self.c.setOrigin(30, 1, 0);
-            addEvent(document.getElementById('walk2'),'click',annimation.drawBody);
+            self.util.addEvent(document.getElementById('walk2'),
+                'click',annimation.drawBody);
             self.drawBody();
         },
         
@@ -55,7 +57,6 @@
                 }
             }
             self.c.stroke();
-            console.log(self.grads);
             self.grads += 10;
             if(self.count < 20) {
                 self.count += 1;
@@ -68,5 +69,5 @@
     };
     window.annimation = self;
     
-    addEvent(window, 'load', self.init);
+    self.util.addEvent(window, 'load', self.init);
 }('annimation2'));

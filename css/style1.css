@@ -1,8 +1,16 @@
 /* style1.css */
+body {
+    color: #000;
+    background: #fff;
+    font: 70%/1 "DejaVu Sans", "URW Gothic L",
+        "Helvetica Neue", Helvetica,
+        Arial, "Microsoft Sans Serif", sans-serif; 
+}
+
 #page {
     margin: 0 auto;
     padding: 10px;
-    width: 90%;
+    width: 95%;
     border: 1px solid #000;
 }
 
