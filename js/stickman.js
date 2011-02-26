@@ -4,7 +4,6 @@ stickman.js - stick man
 
 var Stickman = function(scale) {
     if(!(this instanceof Stickman)) {
-        console.log('not instance of Stickman');
         return new Stickman(scale);
     }
     this.scale = scale;
